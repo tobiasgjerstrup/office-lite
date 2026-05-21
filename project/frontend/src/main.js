@@ -14,6 +14,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const textContent = document.getElementById("text-content");
 
+      const saveCurrentFile = async () => {
+        const currentPath = pickedFilePath.textContent;
+        if (!currentPath || currentPath === "No file selected") {
+          pickedFilePath.textContent = "Choose a file or use Save File As";
+          return;
+        }
+
+        try {
+          await window.go.main.App.SaveFile(currentPath, textContent.value);
+        } catch (err) {
+          console.error("Failed to save file:", err);
+          pickedFilePath.textContent = "Failed to save file";
+        }
+      };
+
       pickFileBtn.addEventListener("click", async () => {
         try {
           const pickedFile = await window.go.main.App.PickFile();
@@ -32,24 +47,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
 
-      saveFileBtn.addEventListener("click", async () => {
-        const currentPath = pickedFilePath.textContent;
-        if (!currentPath || currentPath === "No file selected") {
-          pickedFilePath.textContent = "Choose a file or use Save File As";
-          return;
-        }
-
-        try {
-          await window.go.main.App.SaveFile(currentPath, textContent.value);
-        } catch (err) {
-          console.error("Failed to save file:", err);
-          pickedFilePath.textContent = "Failed to save file";
-        }
-      });
+      saveFileBtn.addEventListener("click", saveCurrentFile);
 
       saveFileAsBtn.addEventListener("click", async () => {
         try {
-          const savedPath = await window.go.main.App.SaveFileAs(textContent.value);
+          const savedPath = await window.go.main.App.SaveFileAs(
+            textContent.value,
+          );
           if (!savedPath) {
             return;
           }
@@ -58,6 +62,28 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (err) {
           console.error("Failed to save file as:", err);
           pickedFilePath.textContent = "Failed to save file";
+        }
+      });
+
+      document.addEventListener("keydown", (event) => {
+        const isSaveAsShortcut =
+          (event.ctrlKey || event.metaKey) &&
+          event.shiftKey &&
+          event.key.toLowerCase() === "s";
+        const isSaveShortcut =
+          (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s";
+        const isOpenShortcut =
+          (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "o";
+
+        if (isSaveAsShortcut) {
+          event.preventDefault();
+          saveFileAsBtn.click();
+        } else if (isSaveShortcut) {
+          event.preventDefault();
+          saveCurrentFile();
+        } else if (isOpenShortcut) {
+          event.preventDefault();
+          pickFileBtn.click();
         }
       });
     });
