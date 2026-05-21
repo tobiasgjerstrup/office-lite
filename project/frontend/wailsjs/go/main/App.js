@@ -5,3 +5,11 @@
 export function PickFile() {
   return window['go']['main']['App']['PickFile']();
 }
+
+export function SaveFile(arg1, arg2) {
+  return window['go']['main']['App']['SaveFile'](arg1, arg2);
+}
+
+export function SaveFileAs(arg1) {
+  return window['go']['main']['App']['SaveFileAs'](arg1);
+}
