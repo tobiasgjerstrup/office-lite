@@ -4,3 +4,5 @@
 export function Greet(arg1:string):Promise<string>;
 
 export function Greet2(arg1:string):Promise<string>;
+
+export function PickFile():Promise<string>;

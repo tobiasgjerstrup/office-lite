@@ -9,3 +9,7 @@ export function Greet(arg1) {
 export function Greet2(arg1) {
   return window['go']['main']['App']['Greet2'](arg1);
 }
+
+export function PickFile() {
+  return window['go']['main']['App']['PickFile']();
+}
